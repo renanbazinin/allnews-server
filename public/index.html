@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All News Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .endpoints {
+            margin-top: 30px;
+        }
+        .endpoint {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .endpoint a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .endpoint a:hover {
+            text-decoration: underline;
+        }
+        .description {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>All News Server API</h1>
+        <p>Welcome to the All News Server! This API aggregates news from various sources.</p>
+        
+        <div class="endpoints">
+            <h2>Available Endpoints:</h2>
+            
+            <div class="endpoint">
+                <a href="/all-news" target="_blank">/all-news</a>
+                <div class="description">Get latest 50 news articles from all sources (international + Hebrew)</div>
+            </div>
+            
+            <div class="endpoint">
+                <a href="/all-news-heb" target="_blank">/all-news-heb</a>
+                <div class="description">Get latest 50 news articles from Hebrew sources only</div>
+            </div>
+            
+            <h3>International Sources:</h3>
+            <div class="endpoint">
+                <a href="/bbc" target="_blank">/bbc</a>
+                <div class="description">BBC World News</div>
+            </div>
+            
+            <div class="endpoint">
+                <a href="/nyt" target="_blank">/nyt</a>
+                <div class="description">New York Times World News</div>
+            </div>
+            
+            <h3>Hebrew Sources:</h3>
+            <div class="endpoint">
+                <a href="/ynet" target="_blank">/ynet</a>
+                <div class="description">Ynet News</div>
+            </div>
+            
+            <div class="endpoint">
+                <a href="/maariv" target="_blank">/maariv</a>
+                <div class="description">Maariv News</div>
+            </div>
+            
+            <div class="endpoint">
+                <a href="/n12" target="_blank">/n12</a>
+                <div class="description">N12 News</div>
+            </div>
+            
+            <div class="endpoint">
+                <a href="/rotter" target="_blank">/rotter</a>
+                <div class="description">Rotter News</div>
+            </div>
+            
+            <div class="endpoint">
+                <a href="/walla" target="_blank">/walla</a>
+                <div class="description">Walla News</div>
+            </div>
+            
+            <div class="endpoint">
+                <a href="/calcalist" target="_blank">/calcalist</a>
+                <div class="description">Calcalist News</div>
+            </div>
+            
+            <div class="endpoint">
+                <a href="/haaretz" target="_blank">/haaretz</a>
+                <div class="description">Haaretz News</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

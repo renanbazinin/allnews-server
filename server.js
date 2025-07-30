@@ -104,23 +104,24 @@ app.get('/all-news', async (req, res) => {
 
 app.get('/all-news-heb', async (req, res) => {
     try {
-        const [
-            ynetNews, 
-            maarivNews, n12News, rotterNews, wallaNews, calcalistNews, haaretzNews // Add this line
-        ] = await Promise.all([
-            ...(ynetNews.status === 'fulfilled' ? ynetNews.value : []),
-            ...(maarivNews.status === 'fulfilled' ? maarivNews.value : []),
-            ...(n12News.status === 'fulfilled' ? n12News.value : []),
-            ...(rotterNews.status === 'fulfilled' ? rotterNews.value : []),
-            ...(wallaNews.status === 'fulfilled' ? wallaNews.value : []),
-            ...(calcalistNews.status === 'fulfilled' ? calcalistNews.value : []),
-            ...(haaretzNews.status === 'fulfilled' ? haaretzNews.value : [])
+        const results = await Promise.allSettled([
+            fetchYnetNewsRSS(),
+            fetchMaarivNewsRSS(),
+            fetchN12NewsRSS(),
+            fetchRotterNewsRSS(),
+            fetchWallaNewsRSS(),
+            fetchCalcalistNewsRSS(),
+            fetchHaaretzNewsRSS()
         ]);
 
-        const allNews = [
-            ...ynetNews, 
-            ...maarivNews, ...n12News, ...rotterNews, ...wallaNews, ...calcalistNews, ...haaretzNews // Add this line
-        ];
+        const allNews = results.reduce((acc, result) => {
+            if (result.status === 'fulfilled') {
+                return acc.concat(result.value);
+            } else {
+                console.error(`Error fetching Hebrew news: ${result.reason}`);
+                return acc;
+            }
+        }, []);
 
         allNews.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
         
@@ -128,8 +129,8 @@ app.get('/all-news-heb', async (req, res) => {
         
         res.json(latestNews);
     } catch (error) {
-        console.error('Error fetching all news:', error);
-        res.status(500).send('Error fetching all news');
+        console.error('Error fetching all Hebrew news:', error);
+        res.status(500).send('Error fetching all Hebrew news');
     }
 });
 
