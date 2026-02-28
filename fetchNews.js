@@ -284,12 +284,18 @@ async function fetchWallaNewsRSS() {
             const imageMatch = item.description.match(/src="([^"]+)"/);
             const imageUrl = imageMatch ? imageMatch[1] : (item.enclosure ? item.enclosure.url : null);
 
+            // Fix Walla pubDate by subtracting 2 hours
+            const rawPubDate = item.pubDate.replace('<![CDATA[', '').replace(']]>', '').trim();
+            const pubDateObj = new Date(rawPubDate);
+            pubDateObj.setUTCHours(pubDateObj.getUTCHours() - 2);
+            const fixedPubDate = pubDateObj.toUTCString().replace(' GMT', '');
+
             return {
                 title: item.title.replace('<![CDATA[', '').replace(']]>', ''),
                 description: item.description.replace('<![CDATA[', '').replace(']]>', '').replace(/<img[^>]+>/, '').trim(),
                 link: item.link.replace('<![CDATA[', '').replace(']]>', ''),
                 guid: item.guid.replace('<![CDATA[', '').replace(']]>', ''),
-                pubDate: item.pubDate.replace('<![CDATA[', '').replace(']]>', '').replace('GMT', ''),
+                pubDate: fixedPubDate,
                 thumbnail: imageUrl,
                 source: 'Walla'
             };
