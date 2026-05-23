@@ -1,6 +1,20 @@
-const axios = require('axios');
+const axiosLib = require('axios');
 const xml2js = require('xml2js');
 const iconv = require('iconv-lite');  // Add this line
+
+// Shared axios with a 12s upstream timeout and a browser-like User-Agent.
+// Without the timeout, a slow upstream (e.g. Maariv RSS lag) holds the
+// connection open well past any reasonable client deadline. 12s is well
+// under the client's 40s per-source timeout so the client's retry path
+// stays useful.
+// UA: plain Chrome string — bot-branded UAs trigger Varnish 403s on
+// haaretz.co.il, and other Israeli sites have similar protections.
+const axios = axiosLib.create({
+    timeout: 12000,
+    headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    }
+});
 
 async function fetchBBCNewsRSS() {
     try {

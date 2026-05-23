@@ -35,44 +35,27 @@ app.get('/nyt', async (req, res) => {
     }
 });
 
-app.get('/ynet', async (req, res) => {
-    const news = await fetchYnetNewsRSS();
-    res.json(news);
-});
+// Helper: wrap an async fetcher so any thrown error returns a 5xx rather
+// than leaving the response open (Express does not auto-handle async throws).
+function rssRoute(fetcher, label) {
+    return async (req, res) => {
+        try {
+            const news = await fetcher();
+            res.json(news);
+        } catch (error) {
+            console.error(`Error fetching ${label}:`, error.message || error);
+            res.status(502).json({ error: `Failed to fetch ${label}` });
+        }
+    };
+}
 
-
-app.get('/maariv', async (req, res) => {
-    const news = await fetchMaarivNewsRSS();
-    res.json(news);
-});
-
-
-app.get('/n12', async (req, res) => {
-    const news = await fetchN12NewsRSS();
-    res.json(news);
-});
-
-app.get('/rotter', async (req, res) => {
-    const news = await fetchRotterNewsRSS();
-    //const news = await fetchRotterNewsJSON();
-
-  res.json(news);
-});
-
-app.get('/walla', async (req, res) => {
-    const news = await fetchWallaNewsRSS();
-    res.json(news);
-});
-
-app.get('/calcalist', async (req, res) => {
-    const news = await fetchCalcalistNewsRSS();
-    res.json(news);
-});
-
-app.get('/haaretz', async (req, res) => {
-    const news = await fetchHaaretzNewsRSS();
-    res.json(news);
-});
+app.get('/ynet', rssRoute(fetchYnetNewsRSS, 'ynet'));
+app.get('/maariv', rssRoute(fetchMaarivNewsRSS, 'maariv'));
+app.get('/n12', rssRoute(fetchN12NewsRSS, 'n12'));
+app.get('/rotter', rssRoute(fetchRotterNewsRSS, 'rotter'));
+app.get('/walla', rssRoute(fetchWallaNewsRSS, 'walla'));
+app.get('/calcalist', rssRoute(fetchCalcalistNewsRSS, 'calcalist'));
+app.get('/haaretz', rssRoute(fetchHaaretzNewsRSS, 'haaretz'));
 
 app.get('/all-news', async (req, res) => {
     try {
