@@ -2,17 +2,23 @@ const axiosLib = require('axios');
 const xml2js = require('xml2js');
 const iconv = require('iconv-lite');  // Add this line
 
-// Shared axios with a 12s upstream timeout and a browser-like User-Agent.
-// Without the timeout, a slow upstream (e.g. Maariv RSS lag) holds the
+// Shared axios with a 12s upstream timeout and a full browser-like header
+// set. Without the timeout, a slow upstream (e.g. Maariv RSS lag) holds the
 // connection open well past any reasonable client deadline. 12s is well
 // under the client's 40s per-source timeout so the client's retry path
 // stays useful.
-// UA: plain Chrome string — bot-branded UAs trigger Varnish 403s on
-// haaretz.co.il, and other Israeli sites have similar protections.
+//
+// Headers: Israeli news sites (Maariv, Haaretz) sit behind Varnish/WAF
+// rules that 403 requests with axios's default `Accept: application/json,
+// text/plain, */*` and bot-style UAs. Sending a complete browser-like
+// header set (UA + Accept + Accept-Language) raises the chance of passing
+// the WAF check from datacenter IPs.
 const axios = axiosLib.create({
     timeout: 12000,
     headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'he-IL,he;q=0.9,en-US;q=0.8,en;q=0.7'
     }
 });
 
