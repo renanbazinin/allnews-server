@@ -44,7 +44,15 @@ function rssRoute(fetcher, label) {
             res.json(news);
         } catch (error) {
             console.error(`Error fetching ${label}:`, error.message || error);
-            res.status(502).json({ error: `Failed to fetch ${label}` });
+            // Verbose diagnostic block — strip back to just { error: 'Failed to fetch ${label}' }
+            // once production behavior is verified.
+            res.status(502).json({
+                error: `Failed to fetch ${label}`,
+                code: error.code || null,
+                message: error.message || null,
+                upstreamStatus: error.response ? error.response.status : null,
+                upstreamStatusText: error.response ? error.response.statusText : null,
+            });
         }
     };
 }
